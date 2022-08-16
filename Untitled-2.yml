@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: newbucketaug21
+      VersioningConfiguration:
+          Status: Enabled
+      AccessControl: Private
+      LifecycleConfiguration:
+        Rules:
+          - Id: GlacierFlexibleRetrievalRule
+            Prefix: .mp3
+            Status: Enabled
+            ExpirationInDays: 35
+            Transitions:
+                - TransitionInDays: 7
+                  StorageClass: GLACIER
+            NoncurrentVersionTransitions:
+              - StorageClass: GLACIER
+                TransitionInDays: 7
+                NewerNoncurrentVersions: 5
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 35
+              NewerNoncurrentVersions: 5
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
